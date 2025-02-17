@@ -47,12 +47,11 @@ public class Solution {
 		ArrayList<Match> matches = new ArrayList<>();
 		HashMap<Integer, HashMap<Integer, Integer>> hospitalConsiders = new HashMap<>();
 		HashMap<Integer, HashSet<Integer>> studentProposed = new HashMap<>();
-		boolean breakCheck = false;
 
-		int hospitalSlots; // slots that hospitals have
 		Queue<Integer> proposing = new LinkedList<>(_studentList.keySet());
-		ArrayList<Integer> studentPref = new ArrayList<>();
-		ArrayList<Integer> hospPref = new ArrayList<>();
+		ArrayList<Integer> studentPref;
+		ArrayList<Integer> hospPref;
+
 
 		while (!proposing.isEmpty()) {
 
@@ -70,7 +69,7 @@ public class Solution {
 			for (int hospital: studentPref) { //loops through student hospital list
 				if (studentProposed.get(student).contains(hospital)) //if this student alr proposed to hospital skip
 					continue;
-				if (!hospitalConsiders.keySet().contains(hospital))
+				if (!hospitalConsiders.containsKey(hospital))
 					hospitalConsiders.put(hospital,new HashMap<>());
 
 
@@ -78,19 +77,21 @@ public class Solution {
 				//System.out.println("Hospital: " + hospital + " Hospital Pref: " + hospPref + " Hospital Considers Size: " + hospitalConsiders.get(hospital).size());
 				studentProposed.get(student).add(hospital); //proposing to first hospital
 
-				if (hospitalConsiders.get(hospital).size() < hospPref.get(0)) //as long as there are slots available hospitals will consider a student
+				HashMap<Integer, Integer> consider = hospitalConsiders.get(hospital);
+
+				if (consider.size() < hospPref.get(0)) //as long as there are slots available hospitals will consider a student
 				{
-					hospitalConsiders.get(hospital).put(hospPref.lastIndexOf(student), student);
+					consider.put(hospPref.indexOf(student), student);
 					//System.out.println("Ranking: " + hospPref.indexOf(student) + " Hospital Considers Entry: " + hospitalConsiders.get(hospital));
 					break;
 				}
 				else //when there is no more slots the hospital must check to see who they would prefer if this student is rejected they must search
 				{ //through their pref list of hospitals until one will take them
 
-					int rank = hospPref.lastIndexOf(student);
+					int rank = hospPref.indexOf(student);
 
 					int largestNum = 0; //find a way to store largest num for each hospital...
-					for (int k : hospitalConsiders.get(hospital).keySet()) {
+					for (int k : consider.keySet()) {
 						if (largestNum < k) {
 							largestNum = k;
 						}
@@ -98,8 +99,8 @@ public class Solution {
 					//System.out.println("Rank: " + rank + " Largest Num: " + largestNum);
 					if (rank < largestNum) //when current student proposal is more desirable for hospital
 					{
-						proposing.add(hospitalConsiders.get(hospital).remove(largestNum));
-						hospitalConsiders.get(hospital).put(rank,student);
+						proposing.add(consider.remove(largestNum));
+						consider.put(rank,student);
 						break;
 					}
 
