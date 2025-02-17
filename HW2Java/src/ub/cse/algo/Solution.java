@@ -77,11 +77,11 @@ public class Solution {
 				//System.out.println("Hospital: " + hospital + " Hospital Pref: " + hospPref + " Hospital Considers Size: " + hospitalConsiders.get(hospital).size());
 				studentProposed.get(student).add(hospital); //proposing to first hospital
 
-				HashMap<Integer, Integer> consider = hospitalConsiders.get(hospital);
+				//HashMap<Integer, Integer> consider = hospitalConsiders.get(hospital);
 
-				if (consider.size() < hospPref.get(0)) //as long as there are slots available hospitals will consider a student
+				if (hospitalConsiders.get(hospital).size() < hospPref.get(0)) //as long as there are slots available hospitals will consider a student
 				{
-					consider.put(hospPref.indexOf(student), student);
+					hospitalConsiders.get(hospital).put(hospPref.indexOf(student), student);
 					//System.out.println("Ranking: " + hospPref.indexOf(student) + " Hospital Considers Entry: " + hospitalConsiders.get(hospital));
 					break;
 				}
@@ -91,7 +91,7 @@ public class Solution {
 					int rank = hospPref.indexOf(student);
 
 					int largestNum = 0; //find a way to store largest num for each hospital...
-					for (int k : consider.keySet()) {
+					for (int k : hospitalConsiders.get(hospital).keySet()) {
 						if (largestNum < k) {
 							largestNum = k;
 						}
@@ -99,8 +99,8 @@ public class Solution {
 					//System.out.println("Rank: " + rank + " Largest Num: " + largestNum);
 					if (rank < largestNum) //when current student proposal is more desirable for hospital
 					{
-						proposing.add(consider.remove(largestNum));
-						consider.put(rank,student);
+						proposing.add(hospitalConsiders.get(hospital).remove(largestNum));
+						hospitalConsiders.get(hospital).put(rank,student);
 						break;
 					}
 
