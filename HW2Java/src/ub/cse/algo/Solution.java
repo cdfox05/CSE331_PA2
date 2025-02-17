@@ -55,8 +55,14 @@ public class Solution {
 		ArrayList<Integer> hospPref = new ArrayList<>();
 
 		while (!proposing.isEmpty()) {
+
+			System.out.println("Proposing Queue at Start: " + proposing);
+
 			int student = proposing.poll();
+
 			studentPref = _studentList.get(student);
+			System.out.println("Student: " + student + " Student Pref: " + studentPref);
+
 			if (!studentProposed.containsKey(student)) {
 				studentProposed.put(student, new HashSet<>());
 			}
@@ -67,18 +73,21 @@ public class Solution {
 				if (!hospitalConsiders.keySet().contains(hospital))
 					hospitalConsiders.put(hospital,new HashMap<>());
 
+
 				hospPref = _hospitalList.get(hospital);
+				System.out.println("Hospital: " + hospital + " Hospital Pref: " + hospPref + " Hospital Considers Size: " + hospitalConsiders.get(hospital).size());
 				studentProposed.get(student).add(hospital); //proposing to first hospital
 
 				if (hospitalConsiders.get(hospital).size() < hospPref.get(0)) //as long as there are slots available hospitals will consider a student
 				{
-					hospitalConsiders.get(hospital).put(hospPref.indexOf(student), student);
+					hospitalConsiders.get(hospital).put(hospPref.lastIndexOf(student), student);
+					System.out.println("Ranking: " + hospPref.indexOf(student) + " Hospital Considers Entry: " + hospitalConsiders.get(hospital));
 					break;
 				}
 				else //when there is no more slots the hospital must check to see who they would prefer if this student is rejected they must search
 				{ //through their pref list of hospitals until one will take them
 
-					int rank = hospPref.indexOf(student);
+					int rank = hospPref.lastIndexOf(student);
 
 					int largestNum = 0; //find a way to store largest num for each hospital...
 					for (int k : hospitalConsiders.get(hospital).keySet()) {
@@ -86,6 +95,7 @@ public class Solution {
 							largestNum = k;
 						}
 					}
+					System.out.println("Rank: " + rank + " Largest Num: " + largestNum);
 					if (rank < largestNum) //when current student proposal is more desirable for hospital
 					{
 						proposing.add(hospitalConsiders.get(hospital).remove(largestNum));
@@ -95,7 +105,8 @@ public class Solution {
 
 				}
 			}
-
+			System.out.println("Proposal Queue At End: " + proposing);
+			System.out.println("-------------------------------------------------------------------------\n");
 		}
 
 		for (int k : hospitalConsiders.keySet())
