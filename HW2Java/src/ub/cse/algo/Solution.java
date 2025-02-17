@@ -49,15 +49,20 @@ public class Solution {
 		HashMap<Integer, HashSet<Integer>> studentProposed = new HashMap<>();
 		HashMap<Integer, HashMap<Integer,Integer>> hospRanks = new HashMap<>();
 
-		Queue<Integer> proposing = new ArrayDeque<>(_studentList.keySet());
+		Queue<Integer> proposing = new LinkedList<>(_studentList.keySet());
 		ArrayList<Integer> studentPref;
 		ArrayList<Integer> hospPref;
+		int student;
+		int rank;
+		int largestNum;
+
+		HashMap<Integer,Integer> consider;
 
 		while (!proposing.isEmpty()) {
 
 			//System.out.println("Proposing Queue at Start: " + proposing);
 
-			int student = proposing.poll();
+			student = proposing.poll();
 
 			studentPref = _studentList.get(student);
 			//System.out.println("Student: " + student + " Student Pref: " + studentPref);
@@ -73,7 +78,7 @@ public class Solution {
 				if (!hospitalConsiders.containsKey(hospital))
 					hospitalConsiders.put(hospital,new HashMap<>());
 
-				HashMap<Integer,Integer> consider = hospitalConsiders.get(hospital);
+				consider = hospitalConsiders.get(hospital);
 
 				hospPref = _hospitalList.get(hospital);
 				//System.out.println("Hospital: " + hospital + " Hospital Pref: " + hospPref + " Hospital Considers Size: " + hospitalConsiders.get(hospital).size());
@@ -96,9 +101,9 @@ public class Solution {
 				else //when there is no more slots the hospital must check to see who they would prefer if this student is rejected they must search
 				{ //through their pref list of hospitals until one will take them
 
-					int rank = hospRanks.get(hospital).get(student);
+					rank = hospRanks.get(hospital).get(student);
 
-					int largestNum = Collections.max(consider.keySet()); //found in source Java Oracle Documentation for java.collection
+					largestNum = Collections.max(consider.keySet()); //found in source Java Oracle Documentation for java.collection
 					//System.out.println("Rank: " + rank + " Largest Num: " + largestNum);
 					if (rank < largestNum) //when current student proposal is more desirable for hospital
 					{
@@ -115,8 +120,8 @@ public class Solution {
 
 		for (int k : hospitalConsiders.keySet())
 		{
-			for (int student : hospitalConsiders.get(k).values())
-				matches.add(new Match(k,student));
+			for (int s : hospitalConsiders.get(k).values())
+				matches.add(new Match(k,s));
 		}
 
         return matches;
