@@ -49,10 +49,9 @@ public class Solution {
 		HashMap<Integer, HashSet<Integer>> studentProposed = new HashMap<>();
 		HashMap<Integer, HashMap<Integer,Integer>> hospRanks = new HashMap<>();
 
-		Queue<Integer> proposing = new LinkedList<>(_studentList.keySet());
+		Queue<Integer> proposing = new ArrayDeque<>(_studentList.keySet());
 		ArrayList<Integer> studentPref;
 		ArrayList<Integer> hospPref;
-
 
 		while (!proposing.isEmpty()) {
 
@@ -98,7 +97,6 @@ public class Solution {
 				{ //through their pref list of hospitals until one will take them
 
 					int rank = hospRanks.get(hospital).get(student);
-
 
 					int largestNum = Collections.max(consider.keySet()); //found in source Java Oracle Documentation for java.collection
 					//System.out.println("Rank: " + rank + " Largest Num: " + largestNum);
