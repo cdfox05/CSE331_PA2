@@ -62,6 +62,7 @@ public class Solution {
 		int student;
 		int rank;
 		int largestNum;
+		int hospSlots;
 
 		while (!proposing.isEmpty()) {
 
@@ -93,10 +94,11 @@ public class Solution {
 					hospRanks.put(hospital,studentRanks);
 				}
 
-				if (hospPref.get(0) != 0) //as long as there are slots available hospitals will consider a student
+				hospSlots = hospPref.get(0);
+				if (hospSlots != 0) //as long as there are slots available hospitals will consider a student
 				{
 					consider.put(hospRanks.get(hospital).get(student), student);
-					hospPref.set(0,hospPref.get(0)-1);
+					hospPref.set(0,hospSlots-1);
 					break;
 				}
 				else //when there is no more slots the hospital must check to see who they would prefer if this student is rejected they must search
