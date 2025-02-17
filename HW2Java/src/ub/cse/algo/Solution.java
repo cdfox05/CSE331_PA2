@@ -44,28 +44,30 @@ public class Solution {
      */
 	public ArrayList<Match> getMatches() {
 
+		//arraylist init
 		ArrayList<Match> matches = new ArrayList<>();
+		ArrayList<Integer> studentPref;
+		ArrayList<Integer> hospPref;
+
+		//hashmap init
 		HashMap<Integer, HashMap<Integer, Integer>> hospitalConsiders = new HashMap<>();
 		HashMap<Integer, HashSet<Integer>> studentProposed = new HashMap<>();
 		HashMap<Integer, HashMap<Integer,Integer>> hospRanks = new HashMap<>();
+		HashMap<Integer,Integer> consider;
 
+		//queue init
 		Queue<Integer> proposing = new LinkedList<>(_studentList.keySet());
-		ArrayList<Integer> studentPref;
-		ArrayList<Integer> hospPref;
+
+		//int init
 		int student;
 		int rank;
 		int largestNum;
 
-		HashMap<Integer,Integer> consider;
-
 		while (!proposing.isEmpty()) {
-
-			//System.out.println("Proposing Queue at Start: " + proposing);
 
 			student = proposing.poll();
 
 			studentPref = _studentList.get(student);
-			//System.out.println("Student: " + student + " Student Pref: " + studentPref);
 
 			if (!studentProposed.containsKey(student)) {
 				studentProposed.put(student, new HashSet<>());
@@ -81,7 +83,6 @@ public class Solution {
 				consider = hospitalConsiders.get(hospital);
 
 				hospPref = _hospitalList.get(hospital);
-				//System.out.println("Hospital: " + hospital + " Hospital Pref: " + hospPref + " Hospital Considers Size: " + hospitalConsiders.get(hospital).size());
 				studentProposed.get(student).add(hospital); //proposing to first hospital
 
 				if (!hospRanks.containsKey(hospital)) {
@@ -92,19 +93,18 @@ public class Solution {
 					hospRanks.put(hospital,studentRanks);
 				}
 
-				if (consider.size() < hospPref.get(0)) //as long as there are slots available hospitals will consider a student
+				if (hospPref.get(0) != 0) //as long as there are slots available hospitals will consider a student
 				{
 					consider.put(hospRanks.get(hospital).get(student), student);
-					//System.out.println("Ranking: " + hospPref.indexOf(student) + " Hospital Considers Entry: " + hospitalConsiders.get(hospital));
+					hospPref.set(0,hospPref.get(0)-1);
 					break;
 				}
 				else //when there is no more slots the hospital must check to see who they would prefer if this student is rejected they must search
 				{ //through their pref list of hospitals until one will take them
 
 					rank = hospRanks.get(hospital).get(student);
-
 					largestNum = Collections.max(consider.keySet()); //found in source Java Oracle Documentation for java.collection
-					//System.out.println("Rank: " + rank + " Largest Num: " + largestNum);
+
 					if (rank < largestNum) //when current student proposal is more desirable for hospital
 					{
 						proposing.add(consider.remove(largestNum));
@@ -114,8 +114,6 @@ public class Solution {
 
 				}
 			}
-			//System.out.println("Proposal Queue At End: " + proposing);
-			//System.out.println("-------------------------------------------------------------------------\n");
 		}
 
 		for (int k : hospitalConsiders.keySet())
